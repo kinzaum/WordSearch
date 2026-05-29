@@ -23,10 +23,33 @@ body {
 }
 
 .cell {
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     user-select: none;
+    margin: 2px;
+    border-radius: 4px;
+    background-color: #ffffff; /* Start with clean White */
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.selected {
+    background-color: #d1d1d1 !important; /* Mid-grey for active selection */
+    color: #333;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.found {
+    background-color: #4a4e54 !important; /* Gunmetal grey for found words */
+    color: #ffffff;
+    border-color: #2c2e31;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+    font-weight: bold;
+}
+
+#list li {
+    transition: all 0.3s ease;
+    padding: 5px;
 }
