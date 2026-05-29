@@ -1,6 +1,8 @@
 body {
     font-family: sans-serif;
     padding: 20px;
+    touch-action: none; /* Prevents the page from scrolling while playing */
+    overflow: hidden;   /* Keeps the game contained to the screen */
 }
 
 #setup-panel {
