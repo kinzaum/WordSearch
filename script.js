@@ -1,19 +1,69 @@
-
 let isDragging = false;
-let startCell = null;
 let selectedCells = []; 
-let currentGrid = []; // Define globally so mouseup can access it
-let currentWords = []; // Define globally so mouseup can access it
-let hoverTimer = null; // Store the timer
-let currentDirection = null;
+let currentGrid = []; 
+let currentWords = []; 
 
-// --- 2. Global Event Listeners ---
+// --- 1. Global Event Listeners ---
 document.getElementById('openSettings').addEventListener('click', () => {
     document.getElementById('setup-panel').style.display = 'block';
 });
 
 document.getElementById('generateBtn').addEventListener('click', generateGame);
 
+// --- 2. Unified Pointer Logic (Works on PC and Mobile) ---
+document.addEventListener('pointerdown', (e) => {
+    // Only start if clicking a cell
+    if (e.target.classList.contains('cell')) {
+        isDragging = true;
+        selectedCells = [];
+        handlePointerMove(e);
+        e.target.setPointerCapture(e.pointerId);
+    }
+});
+
+document.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    handlePointerMove(e);
+});
+
+document.addEventListener('pointerup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    // Reset styles on all cells
+    document.querySelectorAll('.cell').forEach(el => {
+        el.style.transform = "scale(1)";
+    });
+
+    let formedWord = selectedCells.map(cell => currentGrid[cell.row][cell.col]).join('');
+    
+    if (currentWords.includes(formedWord)) {
+        console.log("Found word:", formedWord);
+        document.querySelectorAll('.cell.selected').forEach(el => {
+            el.classList.add('found');
+            el.classList.remove('selected');
+        });
+        markWordAsFound(formedWord);
+    } else {
+        document.querySelectorAll('.cell.selected').forEach(el => el.classList.remove('selected'));
+    }
+    
+    selectedCells = []; 
+});
+
+function handlePointerMove(e) {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (el && el.classList.contains('cell') && !el.classList.contains('selected')) {
+        el.classList.add('selected');
+        el.style.transform = "scale(0.98)";
+        selectedCells.push({ 
+            row: parseInt(el.dataset.row), 
+            col: parseInt(el.dataset.col) 
+        });
+    }
+}
+
+// --- 3. Game Logic Functions ---
 function markWordAsFound(word) {
     const listItems = document.querySelectorAll('#list li');
     listItems.forEach(li => {
@@ -24,40 +74,12 @@ function markWordAsFound(word) {
         }
     });
 
-    // NOW this is inside the function, where it belongs:
     const allFound = Array.from(listItems).every(li => li.style.textDecoration === 'line-through');
     if (allFound) {
         setTimeout(() => alert("Congratulations! You found all the words!"), 500);
     }
 }
 
-document.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-
-    // Reset the transform on all cells
-    document.querySelectorAll('.cell').forEach(el => el.style.transform = "scale(1)");
-
-    let formedWord = selectedCells.map(cell => currentGrid[cell.row][cell.col]).join('');
-    
-    if (currentWords.includes(formedWord)) {
-        console.log("Found word:", formedWord);
-        
-        // Correctly apply styles to each selected element
-        document.querySelectorAll('.cell.selected').forEach(el => {
-            el.classList.add('found');
-            el.classList.remove('selected');
-        });
-        
-        markWordAsFound(formedWord);
-    } else {
-        document.querySelectorAll('.cell.selected').forEach(el => el.classList.remove('selected'));
-    }
-    
-    selectedCells = []; 
-});
-
-// --- 3. Game Logic Functions ---
 function canPlace(word, row, col, dir, grid, size) {
     for (let i = 0; i < word.length; i++) {
         let r = row + i * dir[0];
@@ -73,9 +95,7 @@ function generateGame() {
     document.getElementById('setup-panel').style.display = 'none';
     const input = document.getElementById('wordInput').value;
     
-    // Assign to the global variable so mouseup can see it
     currentWords = input.split(',').map(w => w.trim().toUpperCase()).filter(w => w.length > 0);
-    
     if (currentWords.length === 0) return;
 
     const longest = Math.max(...currentWords.map(w => w.length));
@@ -92,7 +112,6 @@ function generateGame() {
             const dir = directions[Math.floor(Math.random() * directions.length)];
             const row = Math.floor(Math.random() * size);
             const col = Math.floor(Math.random() * size);
-            
             if (canPlace(word, row, col, dir, grid, size)) {
                 for (let i = 0; i < word.length; i++) {
                     grid[row + i * dir[0]][col + i * dir[1]] = word[i];
@@ -101,10 +120,8 @@ function generateGame() {
             }
             attempts++;
         }
-        if (!placed) console.warn(`Could not place word: ${word}`);
     });
 
-    // Save grid to global variable and render
     currentGrid = grid;
     renderGrid(currentGrid, size, currentWords);
 }
@@ -121,38 +138,6 @@ function renderGrid(grid, size, words) {
         div.textContent = char || alphabet[Math.floor(Math.random() * 26)];
         div.dataset.row = rowIndex;
         div.dataset.col = colIndex;
-
-        div.addEventListener('mousedown', () => {
-            isDragging = true;
-            selectedCells = [{ row: rowIndex, col: colIndex }];
-            div.classList.add('selected');
-            div.style.transform = "scale(0.98)"; // Visual "press"
-            currentDirection = null;
-        });
-
-        div.addEventListener('mouseover', () => {
-            if (!isDragging) return;
-
-            // Clear any existing timer so we don't start multiple
-            clearTimeout(hoverTimer);
-
-            // Set a new timer
-            hoverTimer = setTimeout(() => {
-                // Enforce the direction lock logic here as well
-                if (!div.classList.contains('selected')) {
-                    div.classList.add('selected');
-                    selectedCells.push({ 
-                        row: parseInt(div.dataset.row), 
-                        col: parseInt(div.dataset.col) 
-                    });
-                }
-            }, 100); // 0.1 seconds delay
-        });
-
-            div.addEventListener('mouseout', () => {
-            clearTimeout(hoverTimer);
-        });
-        
         gridEl.appendChild(div);
     }));
 

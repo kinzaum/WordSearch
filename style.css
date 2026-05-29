@@ -1,8 +1,10 @@
 body {
     font-family: sans-serif;
     padding: 20px;
-    touch-action: none; /* Prevents the page from scrolling while playing */
-    overflow: hidden;   /* Keeps the game contained to the screen */
+    touch-action: none; /* Prevents scrolling/panning while touching the game */
+    -webkit-user-select: none; /* Safari */
+    user-select: none;        /* Standard */
+    overflow: hidden;
 }
 
 #setup-panel {
@@ -22,6 +24,8 @@ body {
     display: grid;
     border: 1px solid #000;
     cursor: pointer;
+    /* Prevents the browser from zooming on double-tap */
+    touch-action: none; 
 }
 
 .cell {
@@ -35,6 +39,9 @@ body {
     border-radius: 4px;
     background-color: #ffffff; /* Start with clean White */
     transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+    -webkit-user-select: none; /* Important for mobile */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Removes the blue flash on tap */
 }
 
 .selected {
