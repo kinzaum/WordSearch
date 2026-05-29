@@ -2,6 +2,7 @@ let isDragging = false;
 let selectedCells = []; 
 let currentGrid = []; 
 let currentWords = []; 
+let currentDirection = null; // Added this missing variable
 
 // --- 1. Global Event Listeners ---
 document.getElementById('openSettings').addEventListener('click', () => {
@@ -16,6 +17,7 @@ document.addEventListener('pointerdown', (e) => {
     if (e.target.classList.contains('cell')) {
         isDragging = true;
         selectedCells = [];
+        currentDirection = null; // Reset direction on new start
         handlePointerMove(e);
         e.target.setPointerCapture(e.pointerId);
     }
@@ -30,7 +32,7 @@ document.addEventListener('pointerup', () => {
     if (!isDragging) return;
     isDragging = false;
 
-    // Reset styles on all cells
+    // Reset cell animations
     document.querySelectorAll('.cell').forEach(el => {
         el.style.transform = "scale(1)";
     });
@@ -38,7 +40,6 @@ document.addEventListener('pointerup', () => {
     let formedWord = selectedCells.map(cell => currentGrid[cell.row][cell.col]).join('');
     
     if (currentWords.includes(formedWord)) {
-        console.log("Found word:", formedWord);
         document.querySelectorAll('.cell.selected').forEach(el => {
             el.classList.add('found');
             el.classList.remove('selected');
@@ -53,14 +54,36 @@ document.addEventListener('pointerup', () => {
 
 function handlePointerMove(e) {
     const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (el && el.classList.contains('cell') && !el.classList.contains('selected')) {
-        el.classList.add('selected');
-        el.style.transform = "scale(0.98)";
-        selectedCells.push({ 
-            row: parseInt(el.dataset.row), 
-            col: parseInt(el.dataset.col) 
-        });
+    if (!el || !el.classList.contains('cell') || el.classList.contains('selected')) return;
+
+    const row = parseInt(el.dataset.row);
+    const col = parseInt(el.dataset.col);
+
+    if (selectedCells.length === 0) {
+        addCell(el, row, col);
+    } else if (selectedCells.length === 1) {
+        const last = selectedCells[0];
+        const dr = row - last.row;
+        const dc = col - last.col;
+        
+        // Ensure it's a neighbor (including diagonals)
+        if (Math.abs(dr) <= 1 && Math.abs(dc) <= 1 && !(dr === 0 && dc === 0)) {
+            currentDirection = [dr, dc];
+            addCell(el, row, col);
+        }
+    } else {
+        // Strict direction enforcement
+        const last = selectedCells[selectedCells.length - 1];
+        if (row === last.row + currentDirection[0] && col === last.col + currentDirection[1]) {
+            addCell(el, row, col);
+        }
     }
+}
+
+function addCell(el, row, col) {
+    el.classList.add('selected');
+    el.style.transform = "scale(0.98)";
+    selectedCells.push({ row, col });
 }
 
 // --- 3. Game Logic Functions ---
