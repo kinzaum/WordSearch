@@ -7,10 +7,41 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <a href="index.html">
+            <img src="banner.png" alt="Word Search Safari" class="banner">
+        </a>
+    </header>
+    <div id="game-controls">
+    <select id="themeSelector">
+        <option value="">Default</option>
+        <option value="theme-ocean">Ocean</option>
+        <option value="theme-sunset">Sunset</option>
+        <option value="theme-forest">Forest</option>
+        <option value="theme-dark">Dark Mode</option>
+        <option value="theme-midnight">Midnight</option>
+        <option value="theme-candy">Candy</option>
+        <option value="theme-mint">Mint</option>
+        <option value="theme-sepia">Sepia</option>
+        <option value="theme-lavender">Lavender</option>
+        <option value="theme-slate">Slate</option>
+    </select>
+        <select id="wordCategory">
+            <option value="">-- Choose a category to start --</option>
+            <option value="FRUITS">Fruits</option>
+            <option value="ANIMALS">Animals</option>
+            <option value="TECHNOLOGY">Technology</option>
+        </select>
+        <button id="shuffleBtn">Shuffle</button>
+        <button id="openSettings">Open Settings</button>
+    
+    </div>
+        <div id="congrats-panel" style="display: none;">
+        <h2>CONGRATULATIONS!</h2>
+        <p>You found all the words.</p>
+    </div>
 
-    <button id="openSettings">Open Settings</button>
-
-    <div id="setup-panel">
+    <div id="setup-panel" style="display: none;">
         <textarea id="wordInput" placeholder="Enter words separated by comma"></textarea>
         <button id="generateBtn">Generate Game</button>
     </div>
