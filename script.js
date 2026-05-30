@@ -177,8 +177,8 @@ function renderGrid(grid, size, words) {
         div.textContent = grid[r][col] || String.fromCharCode(65 + Math.floor(Math.random() * 26));
         div.dataset.row = r;
         div.dataset.col = col;
-        div.addEventListener('pointerenter', () => handleCellEntry(div));
-        div.addEventListener('pointerdown', () => { isDragging = true; handleCellEntry(div); });
+        div.addEventListener('pointerenter', () => {if (isDragging) handleCellEntry(div);});
+        div.addEventListener('pointerdown', (e) => { isDragging = true; div.setPointerCapture(e.pointerId); handleCellEntry(div); });
         gridEl.appendChild(div);
     }));
 
