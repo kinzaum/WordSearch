@@ -5,10 +5,29 @@ body {
     -webkit-user-select: none; /* Safari */
     user-select: none;        /* Standard */
     overflow: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s;
 }
 
+:root {
+    --bg-color: #ffffff;
+    --cell-color: #ffffff;
+    --border-color: #ddd;
+    --text-color: #000;
+    --found-color: #4a4e54;
+    --selected-color: #d1d1d1;
+}
+
+/* Ensure the controls are always visible */
+#game-controls {
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+/* Setup panel is only shown when requested */
 #setup-panel {
-    display: none;
+    display: none; 
     margin-bottom: 20px;
     padding: 15px;
     border: 1px solid #ccc;
@@ -36,8 +55,9 @@ body {
     font-weight: bold;
     user-select: none;
     margin: 2px;
+    background-color: var(--cell-color);
     border-radius: 4px;
-    background-color: #ffffff; /* Start with clean White */
+    border: 1px solid var(--border-color);
     transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
     -webkit-user-select: none; /* Important for mobile */
     user-select: none;
@@ -45,13 +65,13 @@ body {
 }
 
 .selected {
-    background-color: #d1d1d1 !important; /* Mid-grey for active selection */
+    background-color: var(--selected-color) !important;
     color: #333;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
 }
 
 .found {
-    background-color: #4a4e54 !important; /* Gunmetal grey for found words */
+    background-color: var(--found-color) !important;
     color: #ffffff;
     border-color: #2c2e31;
     box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
@@ -62,3 +82,45 @@ body {
     transition: all 0.3s ease;
     padding: 5px;
 }
+
+.banner {
+    width: 100%;
+    max-width: 800px; /* Adjust based on your preferred design size */
+    display: block;
+    margin: 0 auto 20px auto; /* Centers the banner */
+    border-radius: 10px; /* Optional: smooths the edges */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adds a subtle depth effect */
+}
+
+#wordInput {
+    width: 100%;
+    height: 120px;
+    resize: vertical;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#congrats-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.theme-ocean { --bg-color: #e0f7fa; --cell-color: #b2ebf2; --found-color: #006064; }
+.theme-sunset { --bg-color: #fff3e0; --cell-color: #ffe0b2; --found-color: #e65100; }
+.theme-forest { --bg-color: #e8f5e9; --cell-color: #c8e6c9; --found-color: #2e7d32; }
+.theme-dark { --bg-color: #121212; --cell-color: #333333; --found-color: #bb86fc; --text-color: #ffffff;--selected-color: #555555; }
+.theme-midnight { --bg-color: #1a237e; --cell-color: #3949ab; --found-color: #ffca28; --text-color: #ffffff; }
+.theme-candy { --bg-color: #fce4ec; --cell-color: #f8bbd0; --found-color: #ad1457; }
+.theme-mint { --bg-color: #e0f2f1; --cell-color: #b2dfdb; --found-color: #00695c; }
+.theme-sepia { --bg-color: #f4ecd8; --cell-color: #e0d0b0; --found-color: #5d4037; --text-color: #4e342e; }
+.theme-lavender { --bg-color: #f3e5f5; --cell-color: #e1bee7; --found-color: #6a1b9a; }
+.theme-slate { --bg-color: #eceff1; --cell-color: #cfd8dc; --found-color: #455a64; }
