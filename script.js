@@ -112,18 +112,6 @@ function markWordAsFound(word) {
             li.style.color = '#a0a0a0';
         }
     });
-
-    // Check if all are found
-    const allFound = Array.from(listItems).every(li => li.style.textDecoration === 'line-through');
-    if (allFound) {
-        const congrats = document.getElementById('congrats-panel');
-        congrats.style.display = 'block';
-        
-        // Hide automatically after 3 seconds
-        setTimeout(() => {
-            congrats.style.display = 'none';
-        }, 3000);
-    }
 }
 
 function canPlace(word, row, col, dir, grid, size) {
@@ -168,7 +156,7 @@ function generateGame() {
 
 function renderGrid(grid, size, words) {
     const gridEl = document.getElementById('grid');
-    gridEl.style.gridTemplateColumns = `repeat(${size}, 25px)`;
+    gridEl.style.gridTemplateColumns = `repeat(${size}, 30px)`;
     gridEl.innerHTML = '';
     
     grid.forEach((row, r) => row.forEach((c, col) => {
@@ -177,8 +165,8 @@ function renderGrid(grid, size, words) {
         div.textContent = grid[r][col] || String.fromCharCode(65 + Math.floor(Math.random() * 26));
         div.dataset.row = r;
         div.dataset.col = col;
-        div.addEventListener('pointerenter', () => {if (isDragging) handleCellEntry(div);});
-        div.addEventListener('pointerdown', (e) => { isDragging = true; div.setPointerCapture(e.pointerId); handleCellEntry(div); });
+        div.addEventListener('pointerenter', () => handleCellEntry(div));
+        div.addEventListener('pointerdown', () => { isDragging = true; handleCellEntry(div); });
         gridEl.appendChild(div);
     }));
 
