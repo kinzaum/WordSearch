@@ -3,7 +3,7 @@ let isDragging = false;
 let selectedCells = []; 
 let currentGrid = []; 
 let currentWords = []; 
-let placedWords = []; // Track exact word positions and paths
+let placedWords = []; 
 let currentDirection = null;
 
 const wordCategories = {
@@ -12,14 +12,7 @@ const wordCategories = {
     TECHNOLOGY: "CODE,SCRIPT,HTML,CSS,BROWSER,SERVER,DATABASE,NETWORK,CLOUD,MOBILE,TABLET,LAPTOP,KEYBOARD,MOUSE,SCREEN,PIXEL,BINARY,ALGORITHM,DEBUG,SOFTWARE,HARDWARE,MEMORY,PROCESSOR,ROBOT,DRONE,VR,AR,WIFI,BLUETOOTH,SECURITY,ENCRYPT,FIREWALL,PYTHON,JAVA,JAVASCRIPT,LINUX,WINDOWS,ANDROID,IOS,UPDATE,DOWNLOAD,UPLOAD,STORAGE,CYBER,DIGITAL,VIRTUAL,DATA,LINK,NODE,SYSTEM"
 };
 
-// --- 2. Word Selection & UI ---
-function updateWordList(category) {
-    if (!category || !wordCategories[category]) return;
-    const allWords = wordCategories[category].split(',');
-    const shuffled = [...allWords].sort(() => 0.5 - Math.random());
-    document.getElementById('wordInput').value = shuffled.slice(0, 10).join(',');
-}
-
+// --- 2. Event Listeners ---
 document.getElementById('wordCategory').addEventListener('change', (e) => {
     if (!e.target.value) return;
     updateWordList(e.target.value);
@@ -43,38 +36,27 @@ document.getElementById('themeSelector').addEventListener('change', (e) => {
     document.body.className = e.target.value || '';
 });
 
-// --- 3. Pointer Logic ---
+// Use capture phase on document to ensure global cleanup
 document.addEventListener('pointerup', () => {
-    if (!isDragging) return;
     isDragging = false;
-
-    document.querySelectorAll('.cell').forEach(el => el.style.transform = "scale(1)");
-
-    // Check against placedWords path, not just string value
-    const foundWordObj = placedWords.find(p => {
-        if (selectedCells.length !== p.word.length) return false;
-        return selectedCells.every((cell, index) => {
-            return cell.row === p.startRow + (index * p.dr) && 
-                   cell.col === p.startCol + (index * p.dc);
-        });
-    });
-
-    if (foundWordObj) {
-        document.querySelectorAll('.cell.selected').forEach(el => {
-            el.classList.add('found');
-            el.classList.remove('selected');
-        });
-        markWordAsFound(foundWordObj.word);
-    } else {
-        document.querySelectorAll('.cell.selected').forEach(el => el.classList.remove('selected'));
-    }
-    
     selectedCells = [];
     currentDirection = null;
-});
+    document.querySelectorAll('.cell').forEach(el => {
+        el.style.transform = "scale(1)";
+        if (!el.classList.contains('found')) el.classList.remove('selected');
+    });
+}, true);
+
+// --- 3. Core Logic ---
+function updateWordList(category) {
+    if (!category || !wordCategories[category]) return;
+    const allWords = wordCategories[category].split(',');
+    const shuffled = [...allWords].sort(() => 0.5 - Math.random());
+    document.getElementById('wordInput').value = shuffled.slice(0, 10).join(',');
+}
 
 function handleCellEntry(el) {
-    if (!isDragging || el.classList.contains('selected')) return;
+    if (!isDragging || el.classList.contains('found') || el.classList.contains('selected')) return;
 
     const row = parseInt(el.dataset.row);
     const col = parseInt(el.dataset.col);
@@ -101,9 +83,30 @@ function addCell(el, row, col) {
     el.classList.add('selected');
     el.style.transform = "scale(0.98)";
     selectedCells.push({ row, col });
+    checkMatch();
 }
 
-// --- 4. Game Generation ---
+function checkMatch() {
+    const foundWordObj = placedWords.find(p => {
+        if (selectedCells.length !== p.word.length) return false;
+        return selectedCells.every((cell, index) => 
+            cell.row === p.startRow + (index * p.dr) && 
+            cell.col === p.startCol + (index * p.dc)
+        );
+    });
+
+    if (foundWordObj) {
+        document.querySelectorAll('.cell.selected').forEach(cellEl => {
+            cellEl.classList.add('found');
+            cellEl.classList.remove('selected');
+        });
+        markWordAsFound(foundWordObj.word);
+        isDragging = false;
+        selectedCells = [];
+        currentDirection = null;
+    }
+}
+
 function markWordAsFound(word) {
     const listItems = document.querySelectorAll('#list li');
     listItems.forEach(li => {
@@ -112,6 +115,13 @@ function markWordAsFound(word) {
             li.style.color = '#a0a0a0';
         }
     });
+
+    const allFound = Array.from(listItems).every(li => li.style.textDecoration === 'line-through');
+    if (allFound) {
+        const congrats = document.getElementById('congrats-panel');
+        congrats.style.display = 'block';
+        setTimeout(() => congrats.style.display = 'none', 3000);
+    }
 }
 
 function canPlace(word, row, col, dir, grid, size) {
@@ -165,10 +175,33 @@ function renderGrid(grid, size, words) {
         div.textContent = grid[r][col] || String.fromCharCode(65 + Math.floor(Math.random() * 26));
         div.dataset.row = r;
         div.dataset.col = col;
-        div.addEventListener('pointerenter', () => handleCellEntry(div));
-        div.addEventListener('pointerdown', () => { isDragging = true; handleCellEntry(div); });
         gridEl.appendChild(div);
     }));
+
+    // Reset interaction handlers
+    gridEl.onpointerdown = (e) => {
+        isDragging = true;
+        selectedCells = [];
+        currentDirection = null;
+        document.querySelectorAll('.cell').forEach(el => el.classList.remove('selected'));
+        if (e.target.classList.contains('cell')) {
+            handleCellEntry(e.target);
+        }
+    };
+
+    gridEl.onpointermove = (e) => {
+        if (!isDragging) return;
+        // Use elementFromPoint to find the cell under the pointer regardless of what event fired
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el && el.classList.contains('cell')) {
+            handleCellEntry(el);
+        }
+    };
+
+    // Ensure dragging ends regardless of where the pointer is released
+    gridEl.onpointerup = () => {
+        isDragging = false;
+    };
 
     const listEl = document.getElementById('list');
     listEl.innerHTML = ''; 
