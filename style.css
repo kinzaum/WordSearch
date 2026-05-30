@@ -45,6 +45,8 @@ body {
     cursor: pointer;
     /* Prevents the browser from zooming on double-tap */
     touch-action: none; 
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .cell {
@@ -62,6 +64,7 @@ body {
     -webkit-user-select: none; /* Important for mobile */
     user-select: none;
     -webkit-tap-highlight-color: transparent; /* Removes the blue flash on tap */
+    touch-action: none;
 }
 
 .selected {
