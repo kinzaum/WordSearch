@@ -168,7 +168,7 @@ function generateGame() {
 
 function renderGrid(grid, size, words) {
     const gridEl = document.getElementById('grid');
-    gridEl.style.gridTemplateColumns = `repeat(${size}, 35px)`;
+    gridEl.style.gridTemplateColumns = `repeat(${size}, 25px)`;
     gridEl.innerHTML = '';
     
     grid.forEach((row, r) => row.forEach((c, col) => {
