@@ -41,24 +41,34 @@ body {
 
 #grid {
     display: grid;
+    grid-template-columns: repeat(12, minmax(12px, 25px));
+    gap: 1px;
     border: 1px solid #000;
     cursor: pointer;
     /* Prevents the browser from zooming on double-tap */
     touch-action: none; 
     user-select: none;
     -webkit-user-select: none;
+    border: 1px solid #000;
+    pointer-events: auto !important;
+    margin: 0 auto; 
+    padding: 0;
+    width: fit-content; /* Shrinks the grid container to fit the cells exactly */
 }
 
 .cell {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
     border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     user-select: none;
-    margin: 2px;
+    margin: 0px;
     background-color: var(--cell-color);
-    border-radius: 4px;
+    border-radius: 2px;
     border: 1px solid var(--border-color);
     transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
     -webkit-user-select: none; /* Important for mobile */
