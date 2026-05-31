@@ -36,6 +36,23 @@ document.getElementById('themeSelector').addEventListener('change', (e) => {
     document.body.className = e.target.value || '';
 });
 
+window.addEventListener('load', () => {
+    const categories = Object.keys(wordCategories);
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    
+    // Set the dropdown value
+    const select = document.getElementById('wordCategory');
+    select.value = randomCategory;
+
+    const themeSelect = document.getElementById('themeSelector');
+    themeSelect.value = 'theme-ocean'; // Sets dropdown to Ocean
+    document.body.className = 'theme-ocean'; // Applies the CSS class
+    
+    // Trigger the game generation
+    updateWordList(randomCategory);
+    generateGame();
+});
+
 // Use capture phase on document to ensure global cleanup
 document.addEventListener('pointerup', () => {
     isDragging = false;
@@ -166,7 +183,7 @@ function generateGame() {
 
 function renderGrid(grid, size, words) {
     const gridEl = document.getElementById('grid');
-    gridEl.style.gridTemplateColumns = `repeat(${size}, 30px)`;
+    //gridEl.style.gridTemplateColumns = `repeat(${size}, 30px)`;
     gridEl.innerHTML = '';
     
     grid.forEach((row, r) => row.forEach((c, col) => {
