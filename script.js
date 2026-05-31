@@ -9,7 +9,20 @@ let currentDirection = null;
 const wordCategories = {
     FRUITS: "APPLE,BANANA,CHERRY,ORANGE,PEACH,GRAPE,MELON,BERRY,KIWI,MANGO,LEMON,LIME,PLUM,PEAR,FIG,GUAVA,DATE,PAPAYA,COCONUT,APRICOT,TANGERINE,GRAPEFRUIT,CRANBERRY,BLACKBERRY,PASSIONFRUIT,DRAGONFRUIT,LYCHEE,PERSIMMON,POMEGRANATE,RHUBARB,STARFRUIT,TANGELO,CURRANT,ELDERBERRY,GOOSEBERRY,MULBERRY,BOYSENBERRY,SALAL,LOQUAT,QUINCE,CLEMENTINE,SATSUMA,KUMQUAT,CITRON",
     ANIMALS: "TIGER,LION,ELEPHANT,ZEBRA,GIRAFFE,MONKEY,DOG,CAT,RABBIT,HORSE,BEAR,WOLF,FOX,DEER,MOOSE,SQUIRREL,PANDA,KOALA,KANGAROO,HIPPO,RHINO,LEOPARD,CHEETAH,PANTHER,JAGUAR,BUFFALO,BISON,CAMEL,LLAMA,ALPACA,SHEEP,GOAT,COW,PIG,DONKEY,MOUSE,RAT,HAMSTER,BADGER,OTTER,SEAL,WALRUS,WHALE,DOLPHIN,SHARK,EAGLE,HAWK,OWL,PENGUIN",
-    TECHNOLOGY: "CODE,SCRIPT,HTML,CSS,BROWSER,SERVER,DATABASE,NETWORK,CLOUD,MOBILE,TABLET,LAPTOP,KEYBOARD,MOUSE,SCREEN,PIXEL,BINARY,ALGORITHM,DEBUG,SOFTWARE,HARDWARE,MEMORY,PROCESSOR,ROBOT,DRONE,VR,AR,WIFI,BLUETOOTH,SECURITY,ENCRYPT,FIREWALL,PYTHON,JAVA,JAVASCRIPT,LINUX,WINDOWS,ANDROID,IOS,UPDATE,DOWNLOAD,UPLOAD,STORAGE,CYBER,DIGITAL,VIRTUAL,DATA,LINK,NODE,SYSTEM"
+    TECHNOLOGY: "CODE,SCRIPT,HTML,CSS,BROWSER,SERVER,DATABASE,NETWORK,CLOUD,MOBILE,TABLET,LAPTOP,KEYBOARD,MOUSE,SCREEN,PIXEL,BINARY,ALGORITHM,DEBUG,SOFTWARE,HARDWARE,MEMORY,PROCESSOR,ROBOT,DRONE,VR,AR,WIFI,BLUETOOTH,SECURITY,ENCRYPT,FIREWALL,PYTHON,JAVA,JAVASCRIPT,LINUX,WINDOWS,ANDROID,IOS,UPDATE,DOWNLOAD,UPLOAD,STORAGE,CYBER,DIGITAL,VIRTUAL,DATA,LINK,NODE,SYSTEM",
+    SPACE: "PLANET,STAR,GALAXY,ORBIT,MOON,SUN,COMET,ASTEROID,NEBULA,ROCKET,ALIEN,GRAVITY,TELESCOPE,VACUUM,SUNLIGHT,METEOR,ECLIPSE,COSMOS,QUASAR,PULSAR,VOID,SYSTEM,SHUTTLE,MISSION",
+    OCEAN: "WAVE,CORAL,REEF,SHARK,WHALE,DOLPHIN,TURTLE,SEAL,FISH,CRAB,STARFISH,SQUID,OCTOPUS,JELLYFISH,SHELL,TIDE,CURRENT,DEPTH,ISLAND,SAND,SALT,KELP,ABYSS,BEACH",
+    CITIES: "PARIS,LONDON,TOKYO,NEWYORK,BERLIN,ROME,MADRID,SYDNEY,TORONTO,DUBAI,MOSCOW,CAIRO,BEIJING,SEOUL,MUMBAI,BANGKOK,LIMA,VIENNA,PRAGUE,ATHENS,OSLO,DENVER,CHICAGO,BOSTON",
+    MUSIC: "JAZZ,ROCK,BLUES,POP,SOUL,FUNK,OPERA,CHOIR,GUITAR,PIANO,DRUMS,BASS,VIOLIN,FLUTE,TRUMPET,TEMPO,RHYTHM,CHORD,LYRIC,VOCAL,AUDIO,RADIO,STAGE,SOLO",
+    COLORS: "RED,BLUE,GREEN,YELLOW,PURPLE,ORANGE,PINK,BROWN,BLACK,WHITE,GRAY,CYAN,MAGENTA,GOLD,SILVER,BEIGE,MAROON,TEAL,INDIGO,NAVY,LIME,OLIVE,CORAL,IVORY",
+    SPORTS: "SOCCER,TENNIS,GOLF,RUGBY,HOCKEY,BASEBALL,BOXING,JUDO,KARATE,SKIING,SURFING,CHESS,CYCLING,FENCING,ROWING,DIVING,ARCHERY,CRICKET,DARTS,TRACK,SUMO,JUDO,RUGBY,POLO",
+    FOOD: "PIZZA,PASTA,SUSHI,TACO,CURRY,SALAD,SOUP,BREAD,CAKE,STEAK,BURGER,TOFU,CHILI,RICE,CAKE,PIE,TART,TOAST,CHEESE,YOGURT,HONEY,JAM,SOUP,STEW",
+    WEATHER: "RAIN,SNOW,WIND,SUNNY,CLOUD,STORM,FOGGY,MIST,THUNDER,LIGHTNING,HAIL,HEAT,COLD,FROST,SNOWY,HUMID,DRY,WET,CLEAR,CLOUDY,BREEZE,GALE,STORM,WINDY",
+    TOOLS: "HAMMER,DRILL,SAW,PLIERS,WRENCH,NAIL,SCREW,BOLT,LEVEL,TAPE,RULER,FILE,KNIFE,AXE,PLANE,BRUSH,DRILL,BIT,VISE,CLAMP,SNIPS,CHISEL,LEVEL,BOLT",
+    CLOTHING: "SHIRT,PANTS,DRESS,SKIRT,HAT,SHOES,BOOTS,SOCKS,COAT,JACKET,SCARF,GLOVES,BELT,TIE,SUIT,JEANS,VEST,SHORTS,CAP,HAT,BOOTS,CLOAK,ROBE,SHIRT",
+    BODY: "HEAD,EYE,EAR,NOSE,MOUTH,NECK,ARM,HAND,FINGER,LEG,FOOT,TOE,BACK,CHEST,HEART,LUNGS,BRAIN,BLOOD,SKIN,BONE,MUSCLE,KNEE,ELBOW,JAW",
+    NATURE: "TREE,LEAF,ROOT,FLOWER,GRASS,BUSH,FOREST,WOOD,RIVER,LAKE,MOUNTAIN,HILL,VALLEY,CAVE,STONE,ROCK,SAND,SKY,CLOUD,WIND,RAIN,SNOW,FIRE,ICE",
+    BRASIL: "BRASIL,AMOR,FELIZ,AMIGO,CASA,FLOR,MAR,SOL,LUA,LIVRO,CARRO,ESCOLA,PORTA,JANELA,MESA,CADEIRA,PEDRA,AGUA,FOGO,TERRA,CHUVA,VENTO,NOITE,DIA,VIDA,CANCAO,DANCA,JOGO,COMIDA,CAFE,PAO,LEITE,CARNE,PEIXE,FRUTA,VERDE,AZUL,PRETO,BRANCO,ROXO,MUNDO,TEMPO,CORACAO,MENTE,ALMA,ESPERANCA,SONHO,VIAGEM,CALOR,FRIO"
 };
 
 // --- 2. Event Listeners ---
@@ -72,11 +85,50 @@ function updateWordList(category) {
     document.getElementById('wordInput').value = shuffled.slice(0, 10).join(',');
 }
 
+document.getElementById('hintBtn').addEventListener('click', () => {
+    // Find all words that haven't been crossed out yet
+    const remainingWords = placedWords.filter(p => {
+        const listItems = document.querySelectorAll('#list li');
+        let found = true;
+        listItems.forEach(li => {
+            if (li.textContent === p.word && li.style.textDecoration !== 'line-through') {
+                found = false;
+            }
+        });
+        return !found;
+    });
+
+    if (remainingWords.length > 0) {
+        // Pick a random remaining word
+        const hintWord = remainingWords[Math.floor(Math.random() * remainingWords.length)];
+        
+        // Find the cell element on the grid
+        const cells = document.querySelectorAll('.cell');
+        const startCell = Array.from(cells).find(el => 
+            parseInt(el.dataset.row) === hintWord.startRow && 
+            parseInt(el.dataset.col) === hintWord.startCol
+        );
+
+        // Flash the cell to show the hint
+        if (startCell) {
+            startCell.style.outline = "3px solid red";
+            setTimeout(() => {
+                startCell.style.outline = "none";
+            }, 1000);
+        }
+    }
+});
+
 function handleCellEntry(el) {
-    if (!isDragging || el.classList.contains('found') || el.classList.contains('selected')) return;
+    // REMOVE the check for .found here. 
+    // We only want to stop if the drag isn't active.
+    if (!isDragging) return;
 
     const row = parseInt(el.dataset.row);
     const col = parseInt(el.dataset.col);
+
+    // If it's already selected in the CURRENT drag, ignore it
+    if (el.classList.contains('selected')) return;
 
     if (selectedCells.length === 0) {
         addCell(el, row, col);
@@ -100,6 +152,8 @@ function addCell(el, row, col) {
     el.classList.add('selected');
     el.style.transform = "scale(0.98)";
     selectedCells.push({ row, col });
+    
+    // Check for match after adding the cell
     checkMatch();
 }
 
@@ -153,32 +207,47 @@ function canPlace(word, row, col, dir, grid, size) {
 function generateGame() {
     document.getElementById('setup-panel').style.display = 'none';
     const input = document.getElementById('wordInput').value;
-    currentWords = input.split(',').map(w => w.trim().toUpperCase()).filter(w => w.length > 0);
-    if (currentWords.length === 0) return;
+    const wordsToPlace = input.split(',').map(w => w.trim().toUpperCase()).filter(w => w.length > 0);
+    
+    if (wordsToPlace.length === 0) return;
 
-    placedWords = []; 
-    const size = 12; 
-    const grid = Array(size).fill(null).map(() => Array(size).fill(''));
+    let success = false;
+    let grid, finalPlacedWords;
+    const size = 12;
     const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
-    currentWords.forEach(word => {
-        let placed = false;
-        let attempts = 0;
-        while (!placed && attempts < 200) {
-            const dir = directions[Math.floor(Math.random() * directions.length)];
-            const row = Math.floor(Math.random() * size);
-            const col = Math.floor(Math.random() * size);
-            if (canPlace(word, row, col, dir, grid, size)) {
-                placedWords.push({ word, startRow: row, startCol: col, dr: dir[0], dc: dir[1] });
-                for (let i = 0; i < word.length; i++) grid[row + i * dir[0]][col + i * dir[1]] = word[i];
-                placed = true;
-            }
-            attempts++;
-        }
-    });
+    // Keep trying to generate the whole board until all words fit
+    while (!success) {
+        grid = Array(size).fill(null).map(() => Array(size).fill(''));
+        finalPlacedWords = [];
+        let allPlaced = true;
 
+        for (const word of wordsToPlace) {
+            let placed = false;
+            let attempts = 0;
+            while (!placed && attempts < 100) {
+                const dir = directions[Math.floor(Math.random() * directions.length)];
+                const row = Math.floor(Math.random() * size);
+                const col = Math.floor(Math.random() * size);
+                
+                if (canPlace(word, row, col, dir, grid, size)) {
+                    finalPlacedWords.push({ word, startRow: row, startCol: col, dr: dir[0], dc: dir[1] });
+                    for (let i = 0; i < word.length; i++) grid[row + i * dir[0]][col + i * dir[1]] = word[i];
+                    placed = true;
+                }
+                attempts++;
+            }
+            if (!placed) {
+                allPlaced = false;
+                break; // Start over with a fresh grid
+            }
+        }
+        if (allPlaced) success = true;
+    }
+
+    placedWords = finalPlacedWords;
     currentGrid = grid;
-    renderGrid(grid, size, currentWords);
+    renderGrid(grid, size, wordsToPlace);
 }
 
 function renderGrid(grid, size, words) {
