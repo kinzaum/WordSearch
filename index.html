@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <img src="banner.png" alt="Game Banner" class="banner">
     <div id="game-controls">
     <select id="themeSelector">
         <option value="">Default</option>
@@ -39,11 +40,7 @@
     <option value="BODY">Body</option>
     <option value="NATURE">Nature</option>
     <option value="BRASIL">Brasil</option>
-</select>
-        <button id="shuffleBtn">Shuffle</button>
-        <button id="openSettings">Open Settings</button>
-        <button id="hintBtn">Hint</button>
-    
+</select>    
     </div>
         <div id="congrats-panel" style="display: none;">
         <h2>CONGRATULATIONS!</h2>
@@ -54,7 +51,11 @@
         <textarea id="wordInput" placeholder="Enter words separated by comma"></textarea>
         <button id="generateBtn">Generate Game</button>
     </div>
-
+<div id="game-buttons">
+    <button id="shuffleBtn">Shuffle</button>
+    <button id="openSettings">Open Settings</button>
+    <button id="hintBtn">Hint</button>
+</div>
     <div id="game-container">
         <div id="grid"></div>
         <div id="word-list">
