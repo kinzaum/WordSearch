@@ -45,15 +45,25 @@ body {
     flex-shrink: 0;
 }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.hint-highlight {
+    animation: pulse 1s infinite;
+}
+
 .cell {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    margin: 0;
+    margin: 1px;
     background-color: var(--cell-color);
     border: 1px solid var(--border-color);
     border-radius: 2px;
