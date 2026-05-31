@@ -109,7 +109,7 @@ body {
 
 .banner {
     width: 100%;
-    max-width: 600px;
+    max-width: 300px; /* Adjust to match your grid width */
     display: block;
     margin: 0 auto 10px auto;
     border-radius: 10px;
