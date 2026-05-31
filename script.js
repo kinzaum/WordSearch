@@ -40,7 +40,12 @@ document.getElementById('shuffleBtn').addEventListener('click', () => {
 });
 
 document.getElementById('openSettings').addEventListener('click', () => {
-    document.getElementById('setup-panel').style.display = 'block';
+    const panel = document.getElementById('setup-panel');
+    if (panel) {
+        panel.style.display = 'block';
+    } else {
+        console.error("Setup panel not found!");
+    }
 });
 
 document.getElementById('generateBtn').addEventListener('click', generateGame);
@@ -205,18 +210,28 @@ function canPlace(word, row, col, dir, grid, size) {
 }
 
 function generateGame() {
-    document.getElementById('setup-panel').style.display = 'none';
+    // Get and sanitize input
     const input = document.getElementById('wordInput').value;
     const wordsToPlace = input.split(',').map(w => w.trim().toUpperCase()).filter(w => w.length > 0);
     
+    // 1. Length Validation: Prevent freezing by checking word length
+    const size = 12;
+    const longWord = wordsToPlace.find(w => w.length > size);
+    if (longWord) {
+        alert("Oops! The word '" + longWord + "' is too long. Please use words with " + size + " characters or fewer.");
+        return; // Exit function so it doesn't enter the infinite loop
+    }
+
     if (wordsToPlace.length === 0) return;
+    
+    // Close the settings panel after validation
+    document.getElementById('setup-panel').style.display = 'none';
 
     let success = false;
     let grid, finalPlacedWords;
-    const size = 12;
     const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
-    // Keep trying to generate the whole board until all words fit
+    // 2. Generation Loop: Keeps trying until all words fit
     while (!success) {
         grid = Array(size).fill(null).map(() => Array(size).fill(''));
         finalPlacedWords = [];
@@ -225,6 +240,7 @@ function generateGame() {
         for (const word of wordsToPlace) {
             let placed = false;
             let attempts = 0;
+            // Try to place each word up to 100 times
             while (!placed && attempts < 100) {
                 const dir = directions[Math.floor(Math.random() * directions.length)];
                 const row = Math.floor(Math.random() * size);
@@ -232,19 +248,22 @@ function generateGame() {
                 
                 if (canPlace(word, row, col, dir, grid, size)) {
                     finalPlacedWords.push({ word, startRow: row, startCol: col, dr: dir[0], dc: dir[1] });
-                    for (let i = 0; i < word.length; i++) grid[row + i * dir[0]][col + i * dir[1]] = word[i];
+                    for (let i = 0; i < word.length; i++) {
+                        grid[row + i * dir[0]][col + i * dir[1]] = word[i];
+                    }
                     placed = true;
                 }
                 attempts++;
             }
             if (!placed) {
                 allPlaced = false;
-                break; // Start over with a fresh grid
+                break; // Failed to place a word, restart the whole grid
             }
         }
         if (allPlaced) success = true;
     }
 
+    // 3. Finalize
     placedWords = finalPlacedWords;
     currentGrid = grid;
     renderGrid(grid, size, wordsToPlace);
