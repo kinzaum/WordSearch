@@ -7,61 +7,70 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <img src="banner.png" alt="Game Banner" class="banner">
-    <div id="game-controls">
-    <select id="themeSelector">
-        <option value="">Default</option>
-        <option value="theme-ocean">Ocean</option>
-        <option value="theme-sunset">Sunset</option>
-        <option value="theme-forest">Forest</option>
-        <option value="theme-dark">Dark Mode</option>
-        <option value="theme-midnight">Midnight</option>
-        <option value="theme-candy">Candy</option>
-        <option value="theme-mint">Mint</option>
-        <option value="theme-sepia">Sepia</option>
-        <option value="theme-lavender">Lavender</option>
-        <option value="theme-slate">Slate</option>
-    </select>
-<select id="wordCategory">
-    <option value="">-- Choose a category to start --</option>
-    <option value="FRUITS">Fruits</option>
-    <option value="ANIMALS">Animals</option>
-    <option value="TECHNOLOGY">Technology</option>
-    <option value="SPACE">Space</option>
-    <option value="OCEAN">Ocean</option>
-    <option value="CITIES">Cities</option>
-    <option value="MUSIC">Music</option>
-    <option value="COLORS">Colors</option>
-    <option value="SPORTS">Sports</option>
-    <option value="FOOD">Food</option>
-    <option value="WEATHER">Weather</option>
-    <option value="TOOLS">Tools</option>
-    <option value="CLOTHING">Clothing</option>
-    <option value="BODY">Body</option>
-    <option value="NATURE">Nature</option>
-    <option value="BRASIL">Brasil</option>
-</select>    
-    </div>
-        <div id="congrats-panel" style="display: none;">
-        <h2>CONGRATULATIONS!</h2>
-        <p>You found all the words.</p>
+
+    <div id="main-wrapper">
+        <img src="banner.png" alt="Game Banner" class="banner">
+
+        <div id="top-controls">
+            <div id="game-controls">
+                <select id="themeSelector">
+                    <option value="">Default</option>
+                    <option value="theme-ocean">Ocean</option>
+                    <option value="theme-sunset">Sunset</option>
+                    <option value="theme-forest">Forest</option>
+                    <option value="theme-dark">Dark Mode</option>
+                    <option value="theme-midnight">Midnight</option>
+                    <option value="theme-candy">Candy</option>
+                    <option value="theme-mint">Mint</option>
+                    <option value="theme-sepia">Sepia</option>
+                    <option value="theme-lavender">Lavender</option>
+                    <option value="theme-slate">Slate</option>
+                </select>
+                <select id="wordCategory">
+                    <option value="">-- Choose a category to start --</option>
+                    <option value="FRUITS">Fruits</option>
+                    <option value="ANIMALS">Animals</option>
+                    <option value="TECHNOLOGY">Technology</option>
+                    <option value="SPACE">Space</option>
+                    <option value="OCEAN">Ocean</option>
+                    <option value="CITIES">Cities</option>
+                    <option value="MUSIC">Music</option>
+                    <option value="COLORS">Colors</option>
+                    <option value="SPORTS">Sports</option>
+                    <option value="FOOD">Food</option>
+                    <option value="WEATHER">Weather</option>
+                    <option value="TOOLS">Tools</option>
+                    <option value="CLOTHING">Clothing</option>
+                    <option value="BODY">Body</option>
+                    <option value="NATURE">Nature</option>
+                    <option value="BRASIL">Brasil</option>
+                </select>
+            </div>
+
+            <div id="game-buttons">
+                <button id="shuffleBtn">Shuffle</button>
+                <button id="openSettings">Open Settings</button>
+                <button id="hintBtn">Hint</button>
+            </div>
+        </div>
+
+        <div id="setup-panel" style="display: none;">
+            <textarea id="wordInput" placeholder="Enter words separated by comma"></textarea>
+            <button id="generateBtn">Generate Game</button>
+        </div>
+
+        <div id="game-container">
+            <div id="grid"></div>
+            <div id="word-list">
+                <h3>Words to Find</h3>
+                <ul id="list"></ul>
+            </div>
+        </div>
     </div>
 
-    <div id="setup-panel" style="display: none;">
-        <textarea id="wordInput" placeholder="Enter words separated by comma"></textarea>
-        <button id="generateBtn">Generate Game</button>
-    </div>
-<div id="game-buttons">
-    <button id="shuffleBtn">Shuffle</button>
-    <button id="openSettings">Open Settings</button>
-    <button id="hintBtn">Hint</button>
-</div>
-    <div id="game-container">
-        <div id="grid"></div>
-        <div id="word-list">
-            <h3>Words to Find</h3>
-            <ul id="list"></ul>
-        </div>
+    <div id="congrats-panel" style="display: none;">
+        <h2>CONGRATULATIONS!</h2>
+        <p>You found all the words.</p>
     </div>
 
     <script src="script.js"></script>
